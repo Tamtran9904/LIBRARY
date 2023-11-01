@@ -1,0 +1,151 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="batam (generated)" id="1698805932011-1">
+        <createTable tableName="admin">
+            <column name="account_status" type="VARCHAR(10)"/>
+            <column name="password" type="VARCHAR(20)"/>
+            <column name="user_name" type="VARCHAR(20)"/>
+            <column name="admin_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-2">
+        <createTable tableName="author">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="address" type="VARCHAR(100)"/>
+            <column defaultValueBoolean="false" name="deleted" type="BIT(1)"/>
+            <column name="email" type="VARCHAR(50)"/>
+            <column name="gender" type="VARCHAR(10)"/>
+            <column name="name" type="VARCHAR(50)"/>
+            <column name="phone" type="VARCHAR(10)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-3">
+        <createTable tableName="book">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueBoolean="false" name="deleted" type="BIT(1)"/>
+            <column name="price" type="DECIMAL(6, 3)"/>
+            <column name="publish_name" type="VARCHAR(100)"/>
+            <column name="publish_year" type="INT"/>
+            <column name="status_book" type="VARCHAR(50)"/>
+            <column name="title" type="VARCHAR(50)"/>
+            <column name="admin_id" type="BIGINT"/>
+            <column name="author_id" type="BIGINT"/>
+            <column name="category_id" type="BIGINT"/>
+            <column name="record_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-4">
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueBoolean="false" name="deleted" type="BIT(1)"/>
+            <column name="name" type="VARCHAR(20)"/>
+            <column name="note" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-5">
+        <createTable tableName="customer">
+            <column name="password" type="VARCHAR(50)"/>
+            <column name="user_name" type="VARCHAR(50)"/>
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-6">
+        <createTable tableName="person">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="address" type="VARCHAR(100)"/>
+            <column defaultValueBoolean="false" name="deleted" type="BIT(1)"/>
+            <column name="email" type="VARCHAR(50)"/>
+            <column name="gender" type="VARCHAR(10)"/>
+            <column name="name" type="VARCHAR(50)"/>
+            <column name="phone" type="VARCHAR(10)"/>
+            <column name="role_user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-7">
+        <createTable tableName="record">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date_of_expiry" type="datetime"/>
+            <column name="date_of_issue" type="datetime"/>
+            <column defaultValueBoolean="false" name="deleted" type="BIT(1)"/>
+            <column name="customer_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-8">
+        <createTable tableName="role_user">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueBoolean="false" name="deleted" type="BIT(1)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="role" type="VARCHAR(10)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-9">
+        <createIndex indexName="FKam9riv8y6rjwkua1gapdfew4j" tableName="book">
+            <column name="category_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-10">
+        <createIndex indexName="FKe8sdo90xwvgehp3uywsjt9t0j" tableName="book">
+            <column name="record_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-11">
+        <createIndex indexName="FKk7fc1s6ftr9jmvao2j1n1rxd4" tableName="record">
+            <column name="customer_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-12">
+        <createIndex indexName="FKklnrv3weler2ftkweewlky958" tableName="book">
+            <column name="author_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-13">
+        <createIndex indexName="FKn1mtp61cdefbcwp11qt93cucm" tableName="person">
+            <column name="role_user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-14">
+        <createIndex indexName="FKoygra8h9d6bshl08j1s8ooccy" tableName="book">
+            <column name="admin_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-15">
+        <addForeignKeyConstraint baseColumnNames="admin_id" baseTableName="admin" constraintName="FK3bfr65l9tdiovvllpowujbf83" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="person" validate="true"/>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-16">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="book" constraintName="FKam9riv8y6rjwkua1gapdfew4j" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="category" validate="true"/>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-17">
+        <addForeignKeyConstraint baseColumnNames="record_id" baseTableName="book" constraintName="FKe8sdo90xwvgehp3uywsjt9t0j" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="record" validate="true"/>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-18">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="record" constraintName="FKk7fc1s6ftr9jmvao2j1n1rxd4" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="customer_id" referencedTableName="customer" validate="true"/>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-19">
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="book" constraintName="FKklnrv3weler2ftkweewlky958" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="author" validate="true"/>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-20">
+        <addForeignKeyConstraint baseColumnNames="role_user_id" baseTableName="person" constraintName="FKn1mtp61cdefbcwp11qt93cucm" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="role_user" validate="true"/>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-21">
+        <addForeignKeyConstraint baseColumnNames="admin_id" baseTableName="book" constraintName="FKoygra8h9d6bshl08j1s8ooccy" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="admin_id" referencedTableName="admin" validate="true"/>
+    </changeSet>
+    <changeSet author="batam (generated)" id="1698805932011-22">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="customer" constraintName="FKqw58igk7s2kunxvf7ns62ktu2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="person" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
