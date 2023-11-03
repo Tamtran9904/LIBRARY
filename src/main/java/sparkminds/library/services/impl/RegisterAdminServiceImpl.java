@@ -13,6 +13,7 @@ import sparkminds.library.dto.response.RegisterResponse;
 import sparkminds.library.entities.Admin;
 import sparkminds.library.enums.AccountStatus;
 import sparkminds.library.enums.Role;
+import sparkminds.library.exception.UserHaveBeenRegister;
 import sparkminds.library.mapper.MapperServiceImpl;
 import sparkminds.library.repository.AdminRepository;
 import sparkminds.library.repository.RoleRepository;
@@ -33,10 +34,12 @@ public class RegisterAdminServiceImpl implements RegisterService {
 
     private final SendingEmailServiceImpl verifyEmailService;
 
+
     public RegisterResponse register(RegisterRequest registerRequest, HttpServletRequest httpServletRequest)
         throws MessagingException, UnsupportedEncodingException {
         if (adminRepository.findByEmail(registerRequest.getEmail()) != null) {
             log.error("User have been register");
+            throw new UserHaveBeenRegister("Your email have been register before");
         }
         Admin adminEntity = mapperService.convertToEntity(registerRequest, Admin.class);
         adminEntity.setRoleUserId(roleRepository.findByRole(Role.ADMIN));
