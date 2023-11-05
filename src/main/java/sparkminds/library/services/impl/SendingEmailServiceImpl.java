@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import sparkminds.library.repository.PersonRepository;
 
 @Service
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 @Slf4j
 public class SendingEmailServiceImpl {
 
