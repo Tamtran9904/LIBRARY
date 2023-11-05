@@ -19,15 +19,8 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationServiceImpl authenticate;
 
-
-
     @PostMapping("/authenticate")
-    public String  authenticate(@RequestBody LoginRequest request) throws UsernameNotFoundException, Exception{
+    public String  authenticate(@RequestBody LoginRequest request) throws Exception{
         return authenticate.authenticate(request);
-    }
-
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello";
     }
 }

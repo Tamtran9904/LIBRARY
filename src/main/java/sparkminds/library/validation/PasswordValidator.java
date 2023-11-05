@@ -2,7 +2,7 @@ package sparkminds.library.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import sparkminds.library.exception.InValidPasswordRegex;
+import sparkminds.library.exception.DataInValidException;
 import sparkminds.library.validation.annotation.PasswordConstraint;
 
 public class PasswordValidator implements ConstraintValidator<PasswordConstraint, String> {
@@ -17,7 +17,7 @@ public class PasswordValidator implements ConstraintValidator<PasswordConstraint
         if (password != null && password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
             return true;
         } else {
-            throw new InValidPasswordRegex("Password Invalid");
+            throw new DataInValidException("Password Invalid");
         }
     }
 }

@@ -15,18 +15,23 @@ import org.springframework.web.bind.annotation.RestController;
 import sparkminds.library.dto.request.OtpRequest;
 import sparkminds.library.dto.request.RegisterRequest;
 import sparkminds.library.dto.response.RegisterResponse;
-import sparkminds.library.services.impl.RegisterAdminServiceImpl;
+import sparkminds.library.services.impl.OneTimePasswordServiceImpl;
+import sparkminds.library.services.impl.RegisterServiceImpl;
 import sparkminds.library.services.impl.SendingEmailServiceImpl;
-import sparkminds.library.validation.annotation.OtpConstraint;
+import sparkminds.library.services.impl.VerificationLinkServiceImpl;
 
 @RestController
 @RequestMapping("/register")
 @RequiredArgsConstructor
 public class RegisterController {
 
-    private final RegisterAdminServiceImpl registerService;
+    private final RegisterServiceImpl registerService;
 
-    private final SendingEmailServiceImpl verifyEmailService;
+    private final SendingEmailServiceImpl sendingEmailService;
+
+    private final VerificationLinkServiceImpl verificationLinkService;
+
+    private final OneTimePasswordServiceImpl oneTimePasswordService;
 
     @PostMapping("/admin")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest, HttpServletRequest request)
@@ -36,18 +41,18 @@ public class RegisterController {
 
     @GetMapping("/admin/verify")
     public ResponseEntity<RegisterResponse> afterVerify(@RequestParam String code, @RequestParam Long id) {
-       return ResponseEntity.ok(verifyEmailService.isVerificationToken(code, id));
+       return ResponseEntity.ok(verificationLinkService.isVerificationToken(code, id));
     }
 
     @PostMapping("enterOtp")
     public ResponseEntity<RegisterResponse> enterOtp (@Valid @RequestBody OtpRequest otpRequest) {
-        return ResponseEntity.ok(verifyEmailService.enterOtp(otpRequest.getCode(), otpRequest.getEmail()));
+        return ResponseEntity.ok(oneTimePasswordService.enterOtp(otpRequest.getCode(), otpRequest.getEmail()));
     }
 
     @GetMapping("/admin/reSend")
     public void reSendOtp(@RequestParam Long id, HttpServletRequest request)
         throws MessagingException, UnsupportedEncodingException {
-        verifyEmailService.reSendOtp(id, request);
+        sendingEmailService.reSendOtp(id, request);
     }
 
 }

@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -59,10 +60,10 @@ public class Person {
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
 
-    @OneToMany (mappedBy = "personId")
+    @OneToMany (mappedBy = "personId", fetch = FetchType.LAZY)
     private List<VerificationToken> verificationTokenList;
 
-    @OneToMany (mappedBy = "personId")
+    @OneToMany (mappedBy = "personId", fetch = FetchType.LAZY)
     private List<OneTimePassword> oneTimePasswordList;
 
     @ManyToOne (cascade = CascadeType.ALL)

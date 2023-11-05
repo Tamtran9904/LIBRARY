@@ -61,26 +61,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token.");
             log.trace("Expired JWT token trace: {1}", e);
-            responseoneException(httpServletRequest, httpServletResponse, e, "Expired JWT token");
+            responseException(httpServletRequest, httpServletResponse, e, "Expired JWT token");
         } catch (SignatureException  e) {
             log.info("Invalid JWT signature.");
             log.trace("Invalid JWT signature trace: {1}", e);
-            responseoneException(httpServletRequest, httpServletResponse, e, "Invalid JWT signature");
+            responseException(httpServletRequest, httpServletResponse, e, "Invalid JWT signature");
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token.");
             log.trace("Unsupported JWT token trace: {1}", e);
-            responseoneException(httpServletRequest, httpServletResponse, e, "Unsupported JWT token");
+            responseException(httpServletRequest, httpServletResponse, e, "Unsupported JWT token");
         } catch (IllegalArgumentException e) {
             log.info("JWT token compact of handler are invalid.");
             log.trace("JWT token compact of handler are invalid trace: {1}", e);
-            responseoneException(httpServletRequest, httpServletResponse, e, "JWT token compact of handler are invalid");
+            responseException(httpServletRequest, httpServletResponse, e, "JWT token compact of handler are invalid");
         } catch (MalformedJwtException e) {
             log.info("Invalid JWT token.");
             log.trace("Invalid JWT token trace: {1}", e);
-            responseoneException(httpServletRequest, httpServletResponse, e, "Invalid JWT token");
+            responseException(httpServletRequest, httpServletResponse, e, "Invalid JWT token");
         }
     }
-    private void responseoneException(HttpServletRequest request, HttpServletResponse response, Exception e, String message)
+    private void responseException(HttpServletRequest request, HttpServletResponse response, Exception e, String message)
         throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

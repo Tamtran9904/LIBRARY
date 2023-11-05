@@ -33,7 +33,7 @@ public class OneTimePassword {
     @Column (name = "date_of_expiry", columnDefinition = "Datetime")
     private Instant dateOfExpiry;
 
-    @Column (name = "target", columnDefinition = "varchar(15")
+    @Column (name = "target", columnDefinition = "varchar(15)")
     @Enumerated(EnumType.STRING)
     private TargetToken targetToken;
 

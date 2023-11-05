@@ -50,17 +50,17 @@ public class Book {
     private Author authorId;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn (name = "category_id")
     private Category categoryId;
 
     @JsonIgnore
-    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne (cascade = CascadeType.ALL)
     @JoinColumn (name = "record_id")
     private Record recordId;
 
     @JsonIgnore
-    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne (cascade = CascadeType.ALL)
     @JoinColumn (name = "admin_id")
     private Admin adminId;
 

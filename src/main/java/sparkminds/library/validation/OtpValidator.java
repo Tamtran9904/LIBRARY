@@ -7,8 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import sparkminds.library.entities.OneTimePassword;
-import sparkminds.library.exception.OtpExpiredTime;
-import sparkminds.library.exception.UnKnownOtp;
+import sparkminds.library.exception.DataInValidException;
 import sparkminds.library.repository.OntimePasswordRepository;
 import sparkminds.library.validation.annotation.OtpConstraint;
 
@@ -31,12 +30,12 @@ public class OtpValidator implements ConstraintValidator<OtpConstraint, String> 
             Instant currentTime = Instant.now();
             int comparisonResult = expiredTime.compareTo(currentTime);
             if (comparisonResult < 0) {
-                throw new OtpExpiredTime("OTP is expired");
+                throw new DataInValidException("OTP is expired");
             } else {
                 return true;
             }
         }  else {
-            throw new UnKnownOtp("OTP doesn't exist");
+            throw new DataInValidException("OTP doesn't exist");
         }
     }
 }

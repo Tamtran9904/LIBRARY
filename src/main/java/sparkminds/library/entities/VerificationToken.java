@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
-import org.junit.jupiter.api.Tags;
 import sparkminds.library.enums.TargetToken;
 import sparkminds.library.enums.VerificationTokenStatus;
 
@@ -30,7 +29,7 @@ public class VerificationToken {
     @Column (name = "verification_token", columnDefinition = "varchar(255)")
     private String token;
 
-    @Column (name = "date_of_expiry", columnDefinition = "Datetime")
+    @Column (name = "date_of_expiry", columnDefinition = "timestamp")
     private Instant dateOfExpiry;
 
     @ManyToOne (cascade = CascadeType.ALL)
@@ -41,7 +40,7 @@ public class VerificationToken {
     @Enumerated(EnumType.STRING)
     private VerificationTokenStatus verificationTokenStatus;
 
-    @Column (name = "target", columnDefinition = "varchar(15")
+    @Column (name = "target", columnDefinition = "varchar(15)")
     @Enumerated(EnumType.STRING)
     private TargetToken targetToken;
 }
