@@ -32,7 +32,7 @@ public class VerificationToken {
     @Column (name = "date_of_expiry", columnDefinition = "timestamp")
     private Instant dateOfExpiry;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.MERGE)
     @JoinColumn(name = "person_id")
     private Person personId;
 
@@ -40,7 +40,7 @@ public class VerificationToken {
     @Enumerated(EnumType.STRING)
     private VerificationTokenStatus verificationTokenStatus;
 
-    @Column (name = "target", columnDefinition = "varchar(15)")
+    @Column (name = "target", columnDefinition = "varchar(25)")
     @Enumerated(EnumType.STRING)
     private TargetToken targetToken;
 }

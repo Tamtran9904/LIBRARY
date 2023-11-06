@@ -36,12 +36,6 @@ public class VerificationLinkServiceImpl {
 
     @Transactional(rollbackOn = Exception.class)
     public VerificationToken generate(Person person) {
-        verificationTokenRepository.findAll()
-            .stream()
-            .filter(
-                verificationToken -> verificationToken.getDateOfExpiry().compareTo(Instant.now())
-                    < 0)
-            .forEach(verificationTokenRepository::delete);
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
@@ -75,9 +69,8 @@ public class VerificationLinkServiceImpl {
 
         verificationToken.setVerificationTokenStatus(VerificationTokenStatus.VERIFIED);
         person.setAccountStatus(AccountStatus.ACTIVE);
-        handleAfterVerifyService.deleteAfterVerify(person);
         personRepository.save(person);
-
+        handleAfterVerifyService.deleteAfterVerify(person);
         return RegisterResponse.builder().status(HttpStatus.OK).message("Verification Success").build();
     }
 

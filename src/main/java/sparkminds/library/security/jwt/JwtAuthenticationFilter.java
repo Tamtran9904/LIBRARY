@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -45,42 +46,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
-
+        userName = jwtService.extractUsername(jwt);
         try {
-            userName = jwtService.extractUsername(jwt);
-            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null, userDetails.getAuthorities());
+                if(Boolean.TRUE.equals(jwtService.isTokenValid(jwt, userDetails))) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                        null,userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    filterChain.doFilter(httpServletRequest, httpServletResponse);
+                } else {
+                    throw new UnsupportedJwtException("Refresh Token can not call API");
                 }
             }
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token.");
             log.trace("Expired JWT token trace: {1}", e);
-            responseException(httpServletRequest, httpServletResponse, e, "Expired JWT token");
+            responseException(httpServletResponse, e, "Expired JWT token");
         } catch (SignatureException  e) {
             log.info("Invalid JWT signature.");
             log.trace("Invalid JWT signature trace: {1}", e);
-            responseException(httpServletRequest, httpServletResponse, e, "Invalid JWT signature");
+            responseException(httpServletResponse, e, "Invalid JWT signature");
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token.");
             log.trace("Unsupported JWT token trace: {1}", e);
-            responseException(httpServletRequest, httpServletResponse, e, "Unsupported JWT token");
+            responseException(httpServletResponse, e, "Unsupported JWT token");
         } catch (IllegalArgumentException e) {
             log.info("JWT token compact of handler are invalid.");
             log.trace("JWT token compact of handler are invalid trace: {1}", e);
-            responseException(httpServletRequest, httpServletResponse, e, "JWT token compact of handler are invalid");
+            responseException(httpServletResponse, e, "JWT token compact of handler are invalid");
         } catch (MalformedJwtException e) {
             log.info("Invalid JWT token.");
             log.trace("Invalid JWT token trace: {1}", e);
-            responseException(httpServletRequest, httpServletResponse, e, "Invalid JWT token");
+            responseException(httpServletResponse, e, "Invalid JWT token");
         }
     }
-    private void responseException(HttpServletRequest request, HttpServletResponse response, Exception e, String message)
+    private void responseException(HttpServletResponse response, Exception e, String message)
         throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -33,15 +33,15 @@ public class RegisterController {
 
     private final OneTimePasswordServiceImpl oneTimePasswordService;
 
-    @PostMapping("/admin")
+    @PostMapping("/user")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest, HttpServletRequest request)
         throws MessagingException, UnsupportedEncodingException {
        return ResponseEntity.ok(registerService.register(registerRequest, request));
     }
 
-    @GetMapping("/admin/verify")
+    @GetMapping("/user/verify")
     public ResponseEntity<RegisterResponse> afterVerify(@RequestParam String code, @RequestParam Long id) {
-       return ResponseEntity.ok(verificationLinkService.isVerificationToken(code, id));
+        return ResponseEntity.ok(verificationLinkService.isVerificationToken(code, id));
     }
 
     @PostMapping("enterOtp")
@@ -49,10 +49,10 @@ public class RegisterController {
         return ResponseEntity.ok(oneTimePasswordService.enterOtp(otpRequest.getCode(), otpRequest.getEmail()));
     }
 
-    @GetMapping("/admin/reSend")
-    public void reSendOtp(@RequestParam Long id, HttpServletRequest request)
+    @GetMapping("/user/reSend")
+    public ResponseEntity<RegisterResponse> reSendOtp(@RequestParam Long id, HttpServletRequest request)
         throws MessagingException, UnsupportedEncodingException {
-        sendingEmailService.reSendOtp(id, request);
+        return ResponseEntity.ok(sendingEmailService.reSendOtp(id, request));
     }
 
 }

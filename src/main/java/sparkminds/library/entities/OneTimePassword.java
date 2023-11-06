@@ -33,11 +33,11 @@ public class OneTimePassword {
     @Column (name = "date_of_expiry", columnDefinition = "Datetime")
     private Instant dateOfExpiry;
 
-    @Column (name = "target", columnDefinition = "varchar(15)")
+    @Column (name = "target", columnDefinition = "varchar(25)")
     @Enumerated(EnumType.STRING)
     private TargetToken targetToken;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.MERGE)
     @JoinColumn(name = "person_id")
     private Person personId;
 

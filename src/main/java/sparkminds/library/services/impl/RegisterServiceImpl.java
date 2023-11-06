@@ -11,12 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sparkminds.library.dto.request.RegisterRequest;
 import sparkminds.library.dto.response.RegisterResponse;
-import sparkminds.library.entities.Admin;
+import sparkminds.library.entities.Customer;
 import sparkminds.library.enums.AccountStatus;
 import sparkminds.library.enums.Role;
 import sparkminds.library.exception.DataInValidException;
 import sparkminds.library.mapper.MapperServiceImpl;
-import sparkminds.library.repository.AdminRepository;
+import sparkminds.library.repository.CustomerRepository;
 import sparkminds.library.repository.RoleRepository;
 import sparkminds.library.services.RegisterService;
 
@@ -24,8 +24,8 @@ import sparkminds.library.services.RegisterService;
 @RequiredArgsConstructor
 @Slf4j
 public class RegisterServiceImpl implements RegisterService {
-
-    private final AdminRepository adminRepository;
+    
+    private final CustomerRepository customerRepository;
 
     private final RoleRepository roleRepository;
 
@@ -38,17 +38,17 @@ public class RegisterServiceImpl implements RegisterService {
     @Transactional (rollbackOn = Exception.class)
     public RegisterResponse register(RegisterRequest registerRequest, HttpServletRequest httpServletRequest)
         throws MessagingException, UnsupportedEncodingException {
-        if (adminRepository.findByEmail(registerRequest.getEmail()) != null) {
+        if (customerRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             log.error("User have been register");
             throw new DataInValidException("User have been register");
         }
-        Admin adminEntity = mapperService.convertToEntity(registerRequest, Admin.class);
-        adminEntity.setRoleUserId(roleRepository.findByRole(Role.CUSTOMER));
-        adminEntity.setAccountStatus(AccountStatus.PENDING);
-        adminEntity.setPassword(passwordEncoder.encode(adminEntity.getPassword()));
-        adminRepository.save(adminEntity);
+        Customer customer = mapperService.convertToEntity(registerRequest, Customer.class);
+        customer.setRoleUserId(roleRepository.findByRole(Role.CUSTOMER));
+        customer.setAccountStatus(AccountStatus.PENDING);
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        customerRepository.save(customer);
 
-        verifyEmailService.sendVerificationEmail(adminEntity, httpServletRequest.getRequestURL().toString());
+        verifyEmailService.sendVerificationEmail(customer, httpServletRequest.getRequestURL().toString());
 
         return RegisterResponse.builder().status(HttpStatus.OK).message("Success Sign Up").build();
     }
