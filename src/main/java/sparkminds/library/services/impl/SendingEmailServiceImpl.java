@@ -13,12 +13,14 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import sparkminds.library.dto.response.RegisterResponse;
 import sparkminds.library.entities.Person;
+import sparkminds.library.enums.AccountStatus;
+import sparkminds.library.exception.DataInValidException;
 import sparkminds.library.repository.PersonRepository;
 
 @Service
 @RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 @Slf4j
 public class SendingEmailServiceImpl {
 
@@ -82,34 +84,41 @@ public class SendingEmailServiceImpl {
         }
     }
 
-    public Void reSendOtp(Long id, HttpServletRequest request)
+    public RegisterResponse reSendOtp(Long id, HttpServletRequest request)
         throws MessagingException, UnsupportedEncodingException {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (optionalPerson.isEmpty()) {
+            log.error("Person account doesn't exist");
+            throw new DataInValidException("Person account doesn't exist");
+        }
+        Person person = optionalPerson.get();
+        if (person.getAccountStatus() == AccountStatus.ACTIVE) {
+            return RegisterResponse.builder().message("User have bean active before").build();
+        }
         String siteURL = request.getRequestURL().toString();
         String subject = "RESEND: NEW TOKEN";
-        Optional<Person> optionalPerson = personRepository.findById(id);
-        if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
-            MimeMessageHelper helper = generateEmail(person, subject);
-            String otp = oneTimePasswordService.generateOTP(person).getOtp();
-            String content = "Dear [[name]],<br>"
-                + "YOUR NEW OTP</p>"
-                + "<p><b>" + otp + "</b></p>"
-                + "Note: this OTP is set to expire in 1 minuets"
-                + "<br>"
-                + "If you not see OTP, please click here to resend OTP:"
-                + "<h3><a href=\"[[RESEND]]\" target=\"_self\">RESEND</a></h3>"
-                + "Thank you,<br>"
-                + severName;
-            content = content.replace("[[name]]", person.getName());
-            String resendURL = siteURL + "/reSend?id=" + id;
-            content = content.replace("[[RESEND]]", resendURL);
-            helper.setText(content, true);
-            try {
-                mailSender.send(helper.getMimeMessage());
-            } catch (MailException exception) {
-                log.error("Can not send email");
-            }
+
+
+        MimeMessageHelper helper = generateEmail(person, subject);
+        String otp = oneTimePasswordService.generateOTP(person).getOtp();
+        String content = "Dear [[name]],<br>"
+            + "YOUR NEW OTP</p>"
+            + "<p><b>" + otp + "</b></p>"
+            + "Note: this OTP is set to expire in 1 minuets"
+            + "<br>"
+            + "If you not see OTP, please click here to resend OTP:"
+            + "<h3><a href=\"[[RESEND]]\" target=\"_self\">RESEND</a></h3>"
+            + "Thank you,<br>"
+            + severName;
+        content = content.replace("[[name]]", person.getName());
+        String resendURL = siteURL + "/reSend?id=" + id;
+        content = content.replace("[[RESEND]]", resendURL);
+        helper.setText(content, true);
+        try {
+            mailSender.send(helper.getMimeMessage());
+        } catch (MailException exception) {
+            log.error("Can not send email");
         }
-        return null;
+        return RegisterResponse.builder().message("Re-send OTP email have bean sent").build();
     }
 }

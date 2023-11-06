@@ -1,5 +1,6 @@
 package sparkminds.library.entities;
 
+import java.time.Instant;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -66,7 +67,16 @@ public class Person {
     @OneToMany (mappedBy = "personId", fetch = FetchType.LAZY)
     private List<OneTimePassword> oneTimePasswordList;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.MERGE)
     @JoinColumn (name = "role_user_id")
     private RoleUser roleUserId;
+
+    @OneToMany (mappedBy = "personId", fetch = FetchType.LAZY)
+    private List<Session> sessionList;
+
+    @Column (name = "number_login_fail", columnDefinition = "Integer default 0")
+    private Integer numberLoginFail = 0;
+
+    @Column (name = "time_block", columnDefinition = "Datetime")
+    private Instant timeBlock;
 }

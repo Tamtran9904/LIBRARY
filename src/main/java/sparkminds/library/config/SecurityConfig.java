@@ -9,6 +9,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,11 +32,11 @@ public class SecurityConfig {
             .cors().disable()
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/auth/register").permitAll()
-            .antMatchers("/auth/authenticate").permitAll()
+            .antMatchers("/auth/**").permitAll()
             .antMatchers("/register/**").permitAll()
-            .antMatchers("/auth/hello").authenticated();
-
+            .anyRequest().authenticated();
+        http.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenFilter, UsernamePasswordAuthenticationFilter.class);
         return  http.build();
     }

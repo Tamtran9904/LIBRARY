@@ -33,11 +33,13 @@ public class OneTimePasswordServiceImpl {
 
     @Transactional(rollbackOn = Exception.class)
     public OneTimePassword generateOTP(Person person) {
-        person.getOneTimePasswordList()
-            .stream()
-            .filter(oneTimePassword -> oneTimePassword.getTargetToken()
-                .equals(TargetToken.REGISTER_ACCOUNT))
-            .forEach(ontimePasswordRepository::delete);
+        if (person.getOneTimePasswordList() != null) {
+            person.getOneTimePasswordList()
+                .stream()
+                .filter(oneTimePassword -> oneTimePassword.getTargetToken()
+                    .equals(TargetToken.REGISTER_ACCOUNT))
+                .forEach(ontimePasswordRepository::delete);
+        }
 
         String otp = RandomString.make(6);
         OneTimePassword oneTimePassword = new OneTimePassword();

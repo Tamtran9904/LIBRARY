@@ -1,7 +1,12 @@
 package sparkminds.library.controller;
 
+import io.jsonwebtoken.JwtException;
+import javax.naming.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,7 +18,7 @@ import sparkminds.library.exception.VerificationLinkInValidException;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(value = DataInValidException.class)
-    public ErrorResponse expiredJwt(DataInValidException ex) {
+    public ErrorResponse dataInValidException(DataInValidException ex) {
         return ErrorResponse.builder()
                             .status(HttpStatus.NOT_ACCEPTABLE)
                             .errors(ex.getMessage())
@@ -21,7 +26,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ErrorResponse expiredJwt(MethodArgumentNotValidException ex) {
+    public ErrorResponse methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         return ErrorResponse.builder()
             .status(HttpStatus.NOT_ACCEPTABLE)
             .errors(ex.getMessage())
@@ -29,17 +34,49 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(value = VerificationLinkInValidException.class)
-    public ErrorResponse expiredJwt(VerificationLinkInValidException ex) {
+    public ErrorResponse verificationLinkInValidException(VerificationLinkInValidException ex) {
         return ErrorResponse.builder()
-            .status(HttpStatus.NOT_ACCEPTABLE)
+            .status(HttpStatus.BAD_REQUEST)
             .errors(ex.getMessage())
             .build();
     }
 
     @ExceptionHandler(value = MailException.class)
-    public ErrorResponse expiredJwt(MailException ex) {
+    public ErrorResponse mailException(MailException ex) {
         return ErrorResponse.builder()
-            .status(HttpStatus.NOT_ACCEPTABLE)
+            .status(HttpStatus.BAD_REQUEST)
+            .errors(ex.getMessage())
+            .build();
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ErrorResponse authenticationException(BadCredentialsException ex) {
+        return ErrorResponse.builder()
+            .status(HttpStatus.UNAUTHORIZED)
+            .errors(ex.getMessage())
+            .build();
+    }
+
+    @ExceptionHandler(value = LockedException.class)
+    public ErrorResponse authenticationException(LockedException ex) {
+        return ErrorResponse.builder()
+            .status(HttpStatus.FORBIDDEN)
+            .errors(ex.getMessage())
+            .build();
+    }
+
+    @ExceptionHandler(value = UsernameNotFoundException.class)
+    public ErrorResponse usernameNotFoundException(UsernameNotFoundException ex) {
+        return ErrorResponse.builder()
+            .status(HttpStatus.FORBIDDEN)
+            .errors(ex.getMessage())
+            .build();
+    }
+
+    @ExceptionHandler(value = JwtException.class)
+    public ErrorResponse jwtException(JwtException ex) {
+        return ErrorResponse.builder()
+            .status(HttpStatus.UNAUTHORIZED)
             .errors(ex.getMessage())
             .build();
     }
